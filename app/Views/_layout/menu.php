@@ -34,7 +34,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="/Content/">
+                                <a class="nav-link" href="/Content/album_foto">
                                     <i class="mdi mdi-folder menu-icon"></i>
                                     <span class="menu-title">Album Foto</span>
                                 </a>

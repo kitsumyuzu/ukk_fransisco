@@ -29,11 +29,14 @@ class Home extends BaseController {
 
 			$Schema = new Schema();
 
+			$on = 'foto.UserID = user.UserID';
+
 			$setting['data_setting'] = $Schema -> getWhere2('user', ['UserID' => session() -> get('id')]);
+			$fetch['data_foto'] = $Schema -> visual_table_join2('foto', 'user', $on);
 
 			echo view('_layout/header');
 			echo view('_layout/menu', $setting);
-			echo view('pages/dashboard');
+			echo view('pages/dashboard', $fetch);
 			echo view('_layout/footer');
 
 		}
