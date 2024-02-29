@@ -32,13 +32,6 @@
                                     <span class="menu-title">Dashboard</span>
                                 </a>
                             </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Content/album_foto">
-                                    <i class="mdi mdi-folder menu-icon"></i>
-                                    <span class="menu-title">Album Foto</span>
-                                </a>
-                            </li>
                             
                             <li class="nav-item">
                                 <a class="nav-link" href="/Content/">
@@ -47,30 +40,23 @@
                                 </a>
                             </li>
 
-                        <!-- <hr>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Laporan/?">
-                                    <i class="mdi mdi-file-chart menu-icon"></i>
-                                    <span class="menu-title">Charts</span>
-                                </a>
-                            </li> -->
-
                         <hr>
 
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Laporan/?">
-                                    <i class="mdi mdi-account-key menu-icon"></i>
-                                    <span class="menu-title">User</span>
-                                </a>
-                            </li>
+                            <?php if (in_array(session() -> get('level'), [1])) { ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/User/">
+                                        <i class="mdi mdi-account-key menu-icon"></i>
+                                        <span class="menu-title">User</span>
+                                    </a>
+                                </li>
+                            <?php } ?>
 
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a class="nav-link" href="#">
                                     <i class="mdi mdi-settings menu-icon"></i>
                                     <span class="menu-title">Setting</span>
                                 </a>
-                            </li>
+                            </li> -->
 
                         </ul>
                     <!-- End: Menu -->

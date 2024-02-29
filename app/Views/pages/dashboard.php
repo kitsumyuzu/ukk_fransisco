@@ -18,27 +18,68 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-12">
+                                <div class="d-flex justify-content-end mb-3">
+                                    <a href="" style="text-decoration: none;" data-toggle="modal" data-target="#create_album_modals">
+                                        <p>Create Folder</p>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
 
-                            <?php foreach ($data_foto as $data) { ?>
+                            <?php foreach($data_album as $data) {
+                            
+                                if ($data['UserID'] == session() -> get('id')) {
+
+                            ?>
+
+                                <div class="col-md-2 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <a href="<?= base_url('/Content/view_album/'.$data['AlbumID']) ?>" class="card-title" id="folder"><i class="mdi mdi-folder mr-2"></i><?php echo $data['NamaAlbum'] ?></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <?php
+
+                                    }
+                        
+                                }
+                                
+                            ?>
+
+                        </div>
+
+                        <hr style="width:100%;text-align:left;margin-left:0">
+
+                        <div class="row">
+
+                            <?php foreach ($data_foto as $data) {
+                            
+                                if ($data['UserID'] == session() -> get('id')) {
+
+                            ?>
 
                                 <div class="col-md-3 mt-3 d-flex align-items-stretch">
                                     <div class="card" style="width: 18rem;">
-                                        <div class="card-title">
-                                            <div class="row">
-                                                <img class="ml-4 mr-2 mt-3" src="<?php echo base_url('assets/src/stored_profile') ?>/default-profile.png" alt="avatar" style="width: 30px; height: 30px;">
-                                                <p class="username-upload mt-3"><?php echo $data['Username'] ?></p>
+                                        <div class="card-title d-flex align-items-center justify-content-between">
+                                            <div class="ml-3 mt-3 d-flex align-items-center">
+                                                <img class="rounded-circle mr-2" src="<?php echo base_url('assets/src/stored_profile/'.($data['_profile'] ? $data['_profile'] : 'default-profile.png')) ?>" alt="avatar" style="width: 30px; height: 30px;">
+                                                <p class="username-upload mb-0"><?php echo $data['Username'] ?></p>
+                                            </div>
+                                            <div class="mr-3 mt-2 dropdown">
+                                                <a class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="<?= base_url('/Content/update_image/'.$data['FotoID']) ?>">Edit post</a>
+                                                    <?php if ( session() -> get('level') == '1') { ?>
 
-                                                <div class="col-md-7 mt-3">
-                                                    <div class="dropdown d-flex justify-content-end">
-                                                        <a class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">Edit post</a>
-                                                            <a class="dropdown-item" href="#">Delete post</a>
-                                                        </div>
-                                                    </div>
+                                                        <a class="dropdown-item" href="<?= base_url('/Content/action_delete_image/'.$data['FotoID']) ?>">Delete post</a>
+
+                                                    <?php } ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -47,13 +88,117 @@
                                             <h5 class="card-title"><?php echo ($data['JudulFoto'] ? $data['JudulFoto'] : 'no title') ?></h5>
                                             <p class="card-text" style="font-size:12px;"><?php echo ($data['DeskripsiFoto'] ? $data['DeskripsiFoto'] : 'no description') ?></p>
                                             <div class="container logo mt-3 d-flex justify-content-end">
-                                                <i class="btn-like mdi mdi-heart-outline"></i><p class="like-count ml-1">0</p>
-                                                <i class="btn-comment mdi mdi-comment-outline ml-2"></i><p class="comment-count ml-1">0</p>
+                                                <i class="btn-like <?= $data['isLiked'] ? 'mdi mdi-heart' : 'mdi mdi-heart-outline' ?>" id="like-btn-<?= $data_album['FotoID']; ?>" data-foto-id="<?= $data['FotoID']; ?>" data-user-id="<?= session()->get('id'); ?>"></i>
+                                                <p class="like-count ml-1" id="like-count-<?= $data['FotoID']; ?>"><?= $data['likeCount'] ?></p>
+                                                <a href="<?= base_url('/Content/view_comment/'.$data['FotoID']) ?>">
+                                                    <i class="btn-comment mdi mdi-comment-outline ml-2"></i></p>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 
-                            <?php } ?>
+                            <?php
+
+                                    }
+                        
+                                } 
+                                
+                            ?>
 
                         </div>
+
+                        <!-- Start: Modals -->
+
+                            <div class="modal" tabindex="-1" role="dialog" id="create_album_modals">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Tambahkan Album</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        
+                                        <form action="<?= base_url('/Content/create_album/?') ?>" method="post">
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" name="nama_album" placeholder="nama album">
+                                                </div>
+                                                <div class="form-group">
+                                                    <textarea class="form-control" type="text" name="deskripsi_album" placeholder="Deskripsi" rows="10"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-sm btn-primary">Save changes</button>
+                                                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        <!-- END: Modals -->
+
+                        <style>
+
+                            * #folder {
+                                cursor: pointer;
+                                text-decoration: none;
+                            }
+
+                            * #folder:hover {
+                                color: #248afd;
+                            }
+
+                        </style>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var usernameElements = document.querySelectorAll('.username-upload');
+
+                                usernameElements.forEach(function(usernameElement) {
+                                    var username = usernameElement.textContent.trim();
+                                    var maxLength = 18;
+                                    if (username.length > maxLength) {
+                                        var truncatedUsername = username.substring(0, maxLength) + '...';
+                                        usernameElement.textContent = truncatedUsername;
+                                    }
+                                });
+                            });
+                        </script>
+
+                        <!-- Ajax -->
+
+                        <script src="<?= base_url('assets/template') ?>/js/jquery.min.js"></script>
+
+                        <script>
+                            $(document).ready(function() {
+                                function handleLike(fotoID, userID) {
+                                    $.ajax({
+                                        url: '<?= base_url('Content/toggleLike') ?>',
+                                        type: 'POST',
+                                        data: { fotoID: fotoID, userID: userID },
+                                        success: function(response) {
+                                            var likeBtn = $('#like-btn-' + fotoID);
+                                            if (response.liked) {
+                                                likeBtn.addClass('mdi-heart').removeClass('mdi-heart-outline');
+                                            } else {
+                                                likeBtn.addClass('mdi-heart-outline').removeClass('mdi-heart');
+                                            }
+                                            // Update like count
+                                            $('#like-count-' + fotoID).text(response.likeCount);
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error('Error toggling like:', error);
+                                        }
+                                    });
+                                }
+
+                                $('.btn-like').click(function() {
+                                    var fotoID = $(this).data('foto-id');
+                                    var userID = $(this).data('user-id');
+                                    handleLike(fotoID, userID);
+                                });
+                            });
+                        </script>

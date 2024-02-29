@@ -1,4 +1,4 @@
-                        <footer class="footer">
+<footer class="footer">
                             <div class="d-sm-flex justify-content-center justify-content-sm-between">
                                 <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">© 2023 <a href="https://www.instagram.com/kitsuzu.store" target="_blank">Kitsuzu Store</a> All Rights Reserved.</span>
                             </div>
@@ -60,6 +60,10 @@
             color:red;
         }
 
+        .btn-like:hover::before {
+            content: "\F2D1";
+        }
+
         * .btn-comment {
             color:black;
             font-size: 20px;
@@ -67,6 +71,10 @@
 
         * .btn-comment:hover {
             color:aquamarine;
+        }
+        
+        .btn-comment:hover::before {
+            content: "\F17A";
         }
 
     </style>

@@ -82,4 +82,41 @@ class Schema extends Model {
 
 	/* ---------------------------------------------------------------------- */
 
+	public function checkLike($fotoID, $userID) {
+		$result = $this->db->table('likefoto')
+			->where('FotoID', $fotoID)
+			->where('UserID', $userID)
+			->get()
+			->getRow();
+	
+		return $result ? true : false;
+	}
+
+	public function addLike($fotoID, $userID) {
+		$data = [
+				'FotoID' => $fotoID,
+				'UserID' => $userID,
+				'TanggalLike' => date('Y-m-d')
+		];
+
+		return $this->create_data('likefoto', $data);	
+	}
+
+	public function removeLike($fotoID, $userID) {
+		$where = [
+			'FotoID' => $fotoID,
+			'UserID' => $userID,
+		];
+	
+		return $this->delete_data('likefoto', $where);
+	}
+
+	public function countLikes($fotoID) {
+		$result = $this->db->table('likefoto')
+				->where('FotoID', $fotoID)
+				->countAllResults();
+
+		return $result;
+	}
+
 }

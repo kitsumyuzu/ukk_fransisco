@@ -19,7 +19,6 @@
         <!-- inject:css -->
             <link rel="stylesheet" href="<?= base_url('assets/template') ?>/css/vertical-layout-light/style.css">
         <!-- endinject -->
-            <link rel="stylesheet" href="<?= base_url('assets/template') ?>/vendors/fontawesome-icon/fontawesome.min.css">
     </head>
 
     <body class="sidebar-dark sidebar-icon-only">

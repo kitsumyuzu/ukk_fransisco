@@ -30,9 +30,11 @@ class Home extends BaseController {
 			$Schema = new Schema();
 
 			$on = 'foto.UserID = user.UserID';
+			$onalbum = 'album.UserID = user.UserID';
 
 			$setting['data_setting'] = $Schema -> getWhere2('user', ['UserID' => session() -> get('id')]);
 			$fetch['data_foto'] = $Schema -> visual_table_join2('foto', 'user', $on);
+			$fetch['data_album'] = $Schema -> visual_table_join2('album', 'user', $onalbum);
 
 			echo view('_layout/header');
 			echo view('_layout/menu', $setting);
@@ -90,34 +92,6 @@ class Home extends BaseController {
 			} else if (session() -> get('id') > 0) {
 
 				session() -> destroy();
-
-				return redirect() -> to('/Home/');
-
-			}
-
-		}
-
-		public function auth_register() {
-
-			$Schema = new Schema();
-
-			$username = $this -> request -> getPost('username');
-			$email = $this -> request -> getPost('email');
-			$password = $this -> request -> getPost('password');
-			$nama_lengkap = $this -> request -> getPost('nama_lengkap');
-			$alamat = $this -> request -> getPost('alamat');
-
-			if (session() -> get('id') == NULL || session() -> get('id') < 0 || session() -> get('id') == ' ') {
-
-				$Schema -> create_data('user', [
-					'Username' => $username,
-					'Email' => $email,
-					'Password' => md5($password),
-					'NamaLengkap' => $nama_lengkap,
-					'Alamat' => $alamat
-				]);
-
-			} else if (session() -> get('id') > 0) {
 
 				return redirect() -> to('/Home/');
 
