@@ -15,10 +15,13 @@ class Content extends BaseController {
 
 			$Schema = new Schema();
 
-			$fetch['data_album'] = $Schema -> visual_table('album');
+			$on = 'album.user_album = user.id_user';
+
+			$fetch['data_album'] = $Schema -> visual_table_join2('album', 'user', $on);
+			$setting['data_setting'] = $Schema -> getWhere2('user', ['id_user' => session() -> get('id')]);
 
 			echo view('_layout/header');
-			echo view('_layout/menu');
+			echo view('_layout/menu', $setting);
 			echo view('pages/upload_image', $fetch);
 			echo view('_layout/footer');
 
@@ -36,13 +39,14 @@ class Content extends BaseController {
 
 			$Schema = new Schema();
 
-			$on = 'album.UserID = user.UserID';
+			$on = 'album.user_album = user.id_user';
 
-			$fetch['data_foto'] = $Schema -> getWhere2('foto', ['FotoID' => $id]);
+			$fetch['data_foto'] = $Schema -> getWhere2('foto', ['id_foto' => $id]);
 			$fetch['data_album'] = $Schema -> visual_table_join2('album', 'user', $on);
+			$setting['data_setting'] = $Schema -> getWhere2('user', ['id_user' => session() -> get('id')]);
 
 			echo view('_layout/header');
-			echo view('_layout/menu');
+			echo view('_layout/menu', $setting);
 			echo view('pages/update_image', $fetch);
 			echo view('_layout/footer');
 
@@ -50,29 +54,25 @@ class Content extends BaseController {
 
 	}
 
-	public function view_comment($id) {
+	public function view_comment($id)
+{
+    if (session()->get('id') == NULL || session()->get('id') < 0 || session()->get('id') == ' ') {
+        echo view('pages/login');
+    } else if (session()->get('id') > 0) {
+        $Schema = new Schema();
 
-		if (session() -> get('id') == NULL || session() -> get('id') < 0 || session() -> get('id') == ' ') {
+        $on = 'komentarfoto._komentaruser = user.id_user';
 
-			echo view('pages/login');
+        $fetch['data_foto'] = $Schema->getWhere2('foto', ['id_foto' => $id]);
+        $fetch['data_komen'] = $Schema->visual_table_join2('komentarfoto', 'user', $on);
+				$setting['data_setting'] = $Schema -> getWhere2('user', ['id_user' => session() -> get('id')]);
 
-		} else if (session() -> get('id') > 0) {
-
-			$Schema = new Schema();
-
-			$on = 'komentarfoto.UserID = user.UserID';
-
-			$fetch['data_foto'] = $Schema -> getWhere2('foto', ['FotoID' => $id]);
-			$fetch['data_komen'] = $Schema -> visual_table_join2('komentarfoto', 'user', $on);
-
-			echo view('_layout/header');
-			echo view('_layout/menu');
-			echo view('pages/view_comment', $fetch);
-			echo view('_layout/footer');
-
-		}
-
-	}
+        echo view('_layout/header');
+        echo view('_layout/menu', $setting);
+        echo view('pages/view_comment', $fetch);
+        echo view('_layout/footer');
+    }
+}
 
 	public function view_album($id) {
 
@@ -84,13 +84,19 @@ class Content extends BaseController {
 
 			$Schema = new Schema();
 
-			$on = 'album.AlbumID = foto.AlbumID';
-			$on2 = 'foto.UserID = user.UserID';
-			$fetch['filter_album'] = $Schema -> getWhere_table_join_3('foto', 'album', 'user', $on, $on2, ['AlbumID' => $id]);
-			$fetch['data_foto'] = $Schema -> visual_table('foto');
+			$on = 'album.id_album = foto.album_foto';
+			$on2 = 'foto.user_foto = user.id_user';
+			$fetch['data_foto'] = $Schema -> visual_table_join3('foto', 'album', 'user', $on, $on2);
+			$fetch['filter_album'] = $Schema -> getWhere2('album', ['id_album' => $id]);
+			$setting['data_setting'] = $Schema -> getWhere2('user', ['id_user' => session() -> get('id')]);
+
+			foreach ($fetch['data_foto'] as &$photo) {
+				$photo['likeCount'] = $Schema	-> countLike($photo['id_foto']);
+				$photo['commentCount'] = $Schema->commentLike($photo['id_foto']);
+			}
 
 			echo view('_layout/header');
-			echo view('_layout/menu');
+			echo view('_layout/menu', $setting);
 			echo view('pages/view_folder', $fetch);
 			echo view('_layout/footer');
 
@@ -114,11 +120,17 @@ class Content extends BaseController {
 			$deskripsi_album = $this -> request -> getPost('deskripsi_album');
 
 			$Schema -> create_data('album', [
-				'NamaAlbum' => $judul_album,
-				'Deskripsi' => $deskripsi_album,
-				'TanggalDibuat' => date('Y-m-d'),
-				'UserID' => session() -> get('id')
-			]); 
+				'nama_album' => $judul_album,
+				'deskripsi' => $deskripsi_album,
+				'tanggal_di_buat' => date('Y-m-d'),
+				'user_album' => session() -> get('id')
+			]);
+			
+			$Schema -> create_data('history', [
+				'_user' => session() -> get('id'),
+				'_tanggal' => date('Y-m-d H:i:s'),
+				'_detail' => 'membuat album baru : ' . $judul_album
+			]);
 			
 			return redirect() -> to('/Home/dashboard');
 
@@ -140,11 +152,17 @@ class Content extends BaseController {
 			$comment = $this -> request -> getPost('comment');
 
 			$Schema -> create_data('komentarfoto', [
-				'FotoID' => $id,
-				'UserID' => session() -> get('id'),
-				'IsiKomentar' => $comment,
-				'TanggalKomentar' => date('Y-m-d')
-			]); 
+				'_komentarfoto' => $id,
+				'_komentaruser' => session() -> get('id'),
+				'isi_komentar' => $comment,
+				'tanggal_komentar' => date('Y-m-d')
+			]);
+
+			$Schema -> create_data('history', [
+				'_user' => session() -> get('id'),
+				'_tanggal' => date('Y-m-d H:i:s'),
+				'_detail' => 'mengomentari foto : ' . $comment
+			]);
 			
 			return redirect() -> to('/Content/view_comment/'.$id);
 
@@ -175,13 +193,19 @@ class Content extends BaseController {
 			}
 
 			$Schema -> create_data('foto', [
-				'JudulFoto' => $judul_foto,
-				'DeskripsiFoto' => $deskripsi_foto,
-				'TanggalUnggah' => date('Y-m-d'),
-				'LokasiFile' => $images,
-				'AlbumID' => $album_foto,
-				'UserID' => session() -> get('id')
-			]); 
+				'judul_foto' => $judul_foto,
+				'deskripsi_foto' => $deskripsi_foto,
+				'tanggal_unggah' => date('Y-m-d'),
+				'lokasi_file' => $images,
+				'album_foto' => $album_foto,
+				'user_foto' => session() -> get('id')
+			]);
+
+			$Schema -> create_data('history', [
+				'_user' => session() -> get('id'),
+				'_tanggal' => date('Y-m-d H:i:s'),
+				'_detail' => 'mengupload foto baru'
+			]);
 			
 			return redirect() -> to('/Home/dashboard');
 
@@ -243,11 +267,17 @@ class Content extends BaseController {
 			}
 
 			$Schema -> update_data('foto', [
-				'JudulFoto' => $judul_foto,
-				'DeskripsiFoto' => $deskripsi_foto,
-				'LokasiFile' => $images,
-				'AlbumID' => $album_foto,
-			], ['FotoID' => $ids]);
+				'judul_foto' => $judul_foto,
+				'deskripsi_foto' => $deskripsi_foto,
+				'lokasi_file' => $images,
+				'album_foto' => $album_foto,
+			], ['id_foto' => $ids]);
+
+			$Schema -> create_data('history', [
+				'_user' => session() -> get('id'),
+				'_tanggal' => date('Y-m-d H:i:s'),
+				'_detail' => 'mengupdate data foto : ' . $judul_foto
+			]);
 			
 			return redirect() -> to('/Home/dashboard');
 
@@ -265,20 +295,24 @@ class Content extends BaseController {
 			
 			$Schema = new Schema();
 
-				$foto = $Schema->getWhere2('foto', ['FotoID' => $id]);
+				$foto = $Schema->getWhere2('foto', ['id_foto' => $id]);
 
 				if ($foto) {
 					
-					$imagePath = 'assets/src/stored_images/'.$foto['LokasiFile'];
+					$imagePath = 'assets/src/stored_images/'.$foto['lokasi_file'];
 					
 					if (file_exists($imagePath) && $foto['LokasiFile'] !== 'no-image.jpg') {
 						unlink($imagePath);
 					}
 
-					$Schema->delete_data('foto', ['FotoID' => $id]);
+					$Schema->delete_data('foto', ['id_foto' => $id]);
 				}
 
-				$Schema -> delete_data('foto', array('FotoID' => $id));
+				$Schema -> create_data('history', [
+					'_user' => session() -> get('id'),
+					'_tanggal' => date('Y-m-d H:i:s'),
+					'_detail' => 'menghapus data foto : ' . $foto['judul_foto']
+				]);
 			
 			return redirect() -> to('/Home/dashboard');
 

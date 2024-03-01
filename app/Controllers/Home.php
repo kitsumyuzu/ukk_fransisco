@@ -19,6 +19,31 @@ class Home extends BaseController {
 		
 	}
 
+	public function history() {
+
+		if (session() -> get('id') == NULL || session() -> get('id') < 0 || session() -> get('id') == ' ') {
+
+			return redirect() -> to('/Home/');
+
+		} else if (session() -> get('id') > 0) {
+
+			$Schema = new Schema();
+
+			$on = 'history._user = user.id_user';
+
+			$setting['data_setting'] = $Schema -> getWhere2('user', ['id_user' => session() -> get('id')]);
+			$fetch['data_history'] = $Schema -> visual_table_join2('history', 'user', $on);
+
+
+			echo view('_layout/header');
+			echo view('_layout/menu', $setting);
+			echo view('pages/history', $fetch);
+			echo view('_layout/footer');
+
+		}
+
+	}
+
 	public function dashboard() {
 
 		if (session() -> get('id') == NULL || session() -> get('id') < 0 || session() -> get('id') == ' ') {
@@ -29,12 +54,17 @@ class Home extends BaseController {
 
 			$Schema = new Schema();
 
-			$on = 'foto.UserID = user.UserID';
-			$onalbum = 'album.UserID = user.UserID';
+			$on = 'foto.user_foto = user.id_user';
+			$onalbum = 'album.user_album = user.id_user';
 
-			$setting['data_setting'] = $Schema -> getWhere2('user', ['UserID' => session() -> get('id')]);
+			$setting['data_setting'] = $Schema -> getWhere2('user', ['id_user' => session() -> get('id')]);
 			$fetch['data_foto'] = $Schema -> visual_table_join2('foto', 'user', $on);
 			$fetch['data_album'] = $Schema -> visual_table_join2('album', 'user', $onalbum);
+
+			foreach ($fetch['data_foto'] as &$photo) {
+				$photo['likeCount'] = $Schema	-> countLike($photo['id_foto']);
+				$photo['commentCount'] = $Schema->commentLike($photo['id_foto']);
+			}
 
 			echo view('_layout/header');
 			echo view('_layout/menu', $setting);
@@ -68,9 +98,9 @@ class Home extends BaseController {
 
 			if ($data_filter > 0) {
 
-				session() -> set('id', $data_filter['UserID']);
-				session() -> set('username', $data_filter['Username']);
-				session() -> set('email', $data_filter['Email']);
+				session() -> set('id', $data_filter['id_user']);
+				session() -> set('username', $data_filter['username']);
+				session() -> set('email', $data_filter['email']);
 				session() -> set('level', $data_filter['_level']);
 
 				return redirect() -> to('/Home/dashboard');

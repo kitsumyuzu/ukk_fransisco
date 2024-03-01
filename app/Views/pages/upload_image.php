@@ -1,4 +1,4 @@
-                <div class="main-panel">
+<div class="main-panel">
                     <div class="content-wrapper">
                         <div class="row">
                             <div class="col-md-12 grid-margin">
@@ -32,10 +32,6 @@
                                     <div class="card-body">
                                         <h5 id="dynamicTitle" class="card-title">Title</h5>
                                         <p id="dynamicDescription" class="card-text" style="font-size:12px;">Description</p>
-                                        <div class="container logo mt-3 d-flex justify-content-end">
-                                            <i class="mdi mdi-heart-outline" style="color:red;"></i><p class="ml-1">0</p>
-                                            <i class="mdi mdi-comment-outline ml-2" style="color:aquamarine;"></i><p class="ml-1">0</p>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -55,14 +51,9 @@
                                                 <div class="form-group col-md-6">
                                                     <select class="form-control" name="album_foto">
                                                         <option selected disabled>Pilih Album</option>
-                                                        <?php foreach($data_album as $data) {
-                                                            if ($data['UserID'] == session() -> get('id')) {
-                                                        ?>
-                                                            <option value="<?php echo $data['AlbumID'] ?>"><?php echo ucwords($data['NamaAlbum']) ?></option>
-                                                        <?php
-                                                                }
-                                                            }
-                                                        ?>
+                                                        <?php foreach($data_album as $data) { ?>
+                                                            <option value="<?php echo $data['id_album'] ?>">By: <?php echo ucwords($data['username']) ?> - <?php echo ucwords($data['nama_album']) ?></option>
+                                                        <?php } ?>
                                                     </select>
                                                 </div>
                                             </div>

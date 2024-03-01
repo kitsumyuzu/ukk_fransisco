@@ -1,4 +1,4 @@
-                <div class="main-panel">
+<div class="main-panel">
                     <div class="content-wrapper">
                         <div class="row">
                             <div class="col-md-12 grid-margin">
@@ -30,27 +30,17 @@
 
                         <div class="row">
 
-                            <?php foreach($data_album as $data) {
-                            
-                                if ($data['UserID'] == session() -> get('id')) {
-
-                            ?>
+                            <?php foreach($data_album as $data) { ?>
 
                                 <div class="col-md-2 mb-3">
                                     <div class="card">
                                         <div class="card-body">
-                                            <a href="<?= base_url('/Content/view_album/'.$data['AlbumID']) ?>" class="card-title" id="folder"><i class="mdi mdi-folder mr-2"></i><?php echo $data['NamaAlbum'] ?></a>
+                                            <a href="<?= base_url('/Content/view_album/'.$data['id_album']) ?>" class="card-title" id="folder"><i class="mdi mdi-folder mr-2"></i><?php echo $data['nama_album'] ?></a>
                                         </div>
                                     </div>
                                 </div>
 
-                            <?php
-
-                                    }
-                        
-                                }
-                                
-                            ?>
+                            <?php } ?>
 
                         </div>
 
@@ -58,53 +48,50 @@
 
                         <div class="row">
 
-                            <?php foreach ($data_foto as $data) {
-                            
-                                if ($data['UserID'] == session() -> get('id')) {
+                            <?php foreach ($data_foto as $data) { ?>
 
-                            ?>
-
-                                <div class="col-md-3 mt-3 d-flex align-items-stretch">
+                                <div class="col-md-3 mt-3 d-flex align-items-stretch justify-content-center">
                                     <div class="card" style="width: 18rem;">
+                                        <!-- Card content -->
                                         <div class="card-title d-flex align-items-center justify-content-between">
+                                            <!-- User info -->
                                             <div class="ml-3 mt-3 d-flex align-items-center">
-                                                <img class="rounded-circle mr-2" src="<?php echo base_url('assets/src/stored_profile/'.($data['_profile'] ? $data['_profile'] : 'default-profile.png')) ?>" alt="avatar" style="width: 30px; height: 30px;">
-                                                <p class="username-upload mb-0"><?php echo $data['Username'] ?></p>
+                                                <!-- User profile image and username -->
+                                                <img class="rounded-circle mr-2" src="<?php echo base_url('assets/src/stored_profile/' . ($data['_profile'] ? $data['_profile'] : 'default-profile.png')) ?>" alt="avatar" style="width: 30px; height: 30px;">
+                                                <p class="username-upload mb-0"><?php echo $data['username'] ?></p>
                                             </div>
-                                            <div class="mr-3 mt-2 dropdown">
-                                                <a class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="<?= base_url('/Content/update_image/'.$data['FotoID']) ?>">Edit post</a>
-                                                    <?php if ( session() -> get('level') == '1') { ?>
 
-                                                        <a class="dropdown-item" href="<?= base_url('/Content/action_delete_image/'.$data['FotoID']) ?>">Delete post</a>
-
-                                                    <?php } ?>
+                                            <!-- Dropdown for post actions -->
+                                            <?php if ($data['user_foto'] == session()->get('id')) { ?>
+                                                <div class="mr-3 mt-2 dropdown">
+                                                    <a class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item" href="<?= base_url('/Content/update_image/' . $data['id_foto']) ?>">Edit post</a>
+                                                        <?php if (session()->get('level') == '1' || $data['user_foto'] == session()->get('id')) { ?>
+                                                            <a class="dropdown-item" href="<?= base_url('/Content/action_delete_image/' . $data['id_foto']) ?>">Delete post</a>
+                                                        <?php } ?>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            <?php } ?>
                                         </div>
-                                        <img class="card-img-top" src="<?php echo base_url('assets/src/stored_images/'.($data['LokasiFile'] ? $data['LokasiFile'] : 'no-image.jpg')) ?>" style="height: 250px; object-fit:cover;" alt="Images">
+                                        <!-- Card image -->
+                                        <img class="card-img-top" src="<?php echo base_url('assets/src/stored_images/' . ($data['lokasi_file'] ? $data['lokasi_file'] : 'no-image.jpg')) ?>" style="height: 250px; object-fit: cover;" alt="Images">
+                                        <!-- Card body -->
                                         <div class="card-body">
-                                            <h5 class="card-title"><?php echo ($data['JudulFoto'] ? $data['JudulFoto'] : 'no title') ?></h5>
-                                            <p class="card-text" style="font-size:12px;"><?php echo ($data['DeskripsiFoto'] ? $data['DeskripsiFoto'] : 'no description') ?></p>
+                                            <h5 class="card-title"><?php echo ($data['judul_foto'] ? $data['judul_foto'] : 'no title') ?></h5>
+                                            <p class="card-text" style="font-size: 12px;"><?php echo ($data['deskripsi_foto'] ? $data['deskripsi_foto'] : 'no description') ?></p>
                                             <div class="container logo mt-3 d-flex justify-content-end">
-                                                <i class="btn-like <?= $data['isLiked'] ? 'mdi mdi-heart' : 'mdi mdi-heart-outline' ?>" id="like-btn-<?= $data_album['FotoID']; ?>" data-foto-id="<?= $data['FotoID']; ?>" data-user-id="<?= session()->get('id'); ?>"></i>
-                                                <p class="like-count ml-1" id="like-count-<?= $data['FotoID']; ?>"><?= $data['likeCount'] ?></p>
-                                                <a href="<?= base_url('/Content/view_comment/'.$data['FotoID']) ?>">
-                                                    <i class="btn-comment mdi mdi-comment-outline ml-2"></i></p>
+                                                <i class="btn-like <?= ($data['isLiked'] ? 'mdi mdi-heart' : 'mdi mdi-heart-outline') ?>" id="like-btn-<?= $data['id_foto']; ?>" data-foto-id="<?= $data['id_foto']; ?>" data-user-id="<?= session()->get('id'); ?>"></i>
+                                                <p class="like-count ml-1" id="like-count-<?= $data['id_foto']; ?>"><?= $data['likeCount'] ?></p>
+                                                <a href="<?= base_url('/Content/view_comment/' . $data['id_foto']) ?>">
+                                                    <i class="btn-comment mdi mdi-comment-outline ml-3"></i>
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 
-                            <?php
-
-                                    }
-                        
-                                } 
-                                
-                            ?>
+                            <?php } ?>
 
                         </div>
 

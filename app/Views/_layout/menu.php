@@ -1,4 +1,4 @@
-        <div class="container-scroller">
+<div class="container-scroller">
             <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
                 <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                     <a class="navbar-brand brand-logo-mini" href="/Home/"><img src="<?= base_url('assets/src/icon') ?>/logo-brand-collapse.png" alt="logo"></a>
@@ -49,14 +49,14 @@
                                         <span class="menu-title">User</span>
                                     </a>
                                 </li>
-                            <?php } ?>
 
-                            <!-- <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="mdi mdi-settings menu-icon"></i>
-                                    <span class="menu-title">Setting</span>
-                                </a>
-                            </li> -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/Home/history">
+                                        <i class="mdi mdi-clock menu-icon"></i>
+                                        <span class="menu-title">History</span>
+                                    </a>
+                                </li>
+                            <?php } ?>
 
                         </ul>
                     <!-- End: Menu -->

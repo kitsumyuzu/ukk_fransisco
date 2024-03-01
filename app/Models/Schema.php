@@ -70,22 +70,34 @@ class Schema extends Model {
 
 		public function getWhere_table_join_2($table1, $table2, $on, $where) {
 
-			return $this -> db -> table($table1) -> join($table2, $on, 'left') -> getWhere($where) -> getRow();
+			return $this -> db -> table($table1) -> join($table2, $on, 'left') -> getWhere($where) -> getRowArray();
 			
 		}
 
 		public function getWhere_table_join_3($table1, $table2, $table3, $on, $on2, $where) {
 
-			return $this -> db -> table($table1) -> join($table2, $on, 'left') -> join($table3, $on2, 'left') -> getWhere($where) -> getRow();
+			return $this -> db -> table($table1) -> join($table2, $on, 'left') -> join($table3, $on2, 'left') -> getWhere($where) -> getRowArray();
 			
 		}
 
 	/* ---------------------------------------------------------------------- */
 
+	public function countLike($fotoID) {
+
+		return $this -> db -> table('likefoto') -> where('_likefoto', $fotoID) -> countAllResults();
+		
+	}
+
+	public function commentLike($komentarID) {
+
+		return $this -> db -> table('komentarfoto') -> where('_komentarfoto', $komentarID) -> countAllResults();
+		
+	}
+
 	public function checkLike($fotoID, $userID) {
 		$result = $this->db->table('likefoto')
-			->where('FotoID', $fotoID)
-			->where('UserID', $userID)
+			->where('_likefoto', $fotoID)
+			->where('_userfoto', $userID)
 			->get()
 			->getRow();
 	
@@ -94,9 +106,9 @@ class Schema extends Model {
 
 	public function addLike($fotoID, $userID) {
 		$data = [
-				'FotoID' => $fotoID,
-				'UserID' => $userID,
-				'TanggalLike' => date('Y-m-d')
+				'_likefoto' => $fotoID,
+				'_userfoto' => $userID,
+				'tanggal_like' => date('Y-m-d')
 		];
 
 		return $this->create_data('likefoto', $data);	
@@ -104,8 +116,8 @@ class Schema extends Model {
 
 	public function removeLike($fotoID, $userID) {
 		$where = [
-			'FotoID' => $fotoID,
-			'UserID' => $userID,
+			'_likefoto' => $fotoID,
+			'_userfoto' => $userID,
 		];
 	
 		return $this->delete_data('likefoto', $where);
@@ -113,7 +125,7 @@ class Schema extends Model {
 
 	public function countLikes($fotoID) {
 		$result = $this->db->table('likefoto')
-				->where('FotoID', $fotoID)
+				->where('_likefoto', $fotoID)
 				->countAllResults();
 
 		return $result;

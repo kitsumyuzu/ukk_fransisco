@@ -1,4 +1,4 @@
-                <div class="main-panel">
+<div class="main-panel">
                     <div class="content-wrapper">
                         <div class="row">
                             <div class="col-md-12 grid-margin">
@@ -22,14 +22,10 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="card" style="width: 18rem;">
-                                    <img class="card-img-top" id="image_preview" src="<?php echo base_url('assets/src/stored_images/'.($data_foto['LokasiFile'] ? $data_foto['LokasiFile'] : 'no-image.jpg')) ?>" style="height: 250px; object-fit:cover;" alt="image">
+                                    <img class="card-img-top" id="image_preview" src="<?php echo base_url('assets/src/stored_images/'.($data_foto['lokasi_file'] ? $data_foto['lokasi_file'] : 'no-image.jpg')) ?>" style="height: 250px; object-fit:cover;" alt="image">
                                     <div class="card-body">
-                                        <h5 id="dynamicTitle" class="card-title"><?php echo $data_foto['JudulFoto'] ?></h5>
-                                        <p id="dynamicDescription" class="card-text" style="font-size:12px;"><?php echo $data_foto['DeskripsiFoto'] ?></p>
-                                        <div class="container logo mt-3 d-flex justify-content-end">
-                                            <i class="mdi mdi-heart-outline" style="color:red;"></i><p class="ml-1">0</p>
-                                            <i class="mdi mdi-comment-outline ml-2" style="color:aquamarine;"></i><p class="ml-1">0</p>
-                                        </div>
+                                        <h5 id="dynamicTitle" class="card-title"><?php echo $data_foto['judul_foto'] ?></h5>
+                                        <p id="dynamicDescription" class="card-text" style="font-size:12px;"><?php echo $data_foto['deskripsi_foto'] ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -38,27 +34,27 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <form action="<?= base_url('/Content/action_update_image') ?>" method="post" enctype="multipart/form-data">
-                                            <input type="hidden" name="id" value="<?php echo $data_foto['FotoID'] ?>">
-                                            <input type="hidden" name="oldfoto" value="<?php echo $data_foto['LokasiFile'] ?>">
+                                            <input type="hidden" name="id" value="<?php echo $data_foto['id_foto'] ?>">
+                                            <input type="hidden" name="oldfoto" value="<?php echo $data_foto['lokasi_file'] ?>">
                                             <div class="form-group">
                                                 <title for="">Foto</title>
                                                 <input class="form-control" type="file" id="image_input" name="foto">
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-md-6">
-                                                    <input class="form-control" id="judul_foto" type="text" name="judul_foto" placeholder="Judul Foto" value="<?php echo $data_foto['JudulFoto'] ?>">
+                                                    <input class="form-control" id="judul_foto" type="text" name="judul_foto" placeholder="Judul Foto" value="<?php echo $data_foto['judul_foto'] ?>">
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <select class="form-control" name="album_foto">
                                                         <option selected disabled>Pilih Album</option>
                                                         <?php foreach($data_album as $data) { ?>
-                                                            <option value="<?php echo $data['AlbumID'] ?>" <?php echo ($data_foto['AlbumID'] == $data['AlbumID']) ? 'selected' : '' ?>><?php echo ucwords($data['NamaAlbum']) ?></option>
+                                                            <option value="<?php echo $data['id_album'] ?>" <?php echo ($data_foto['album_foto'] == $data['id_album']) ? 'selected' : '' ?>>By: <?php echo ucwords($data['username']) ?> - <?php echo ucwords($data['nama_album']) ?></option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
                                             </div>
                                                 <div class="form-group">
-                                                    <textarea class="form-control" id="deskripsi_foto" type="text" name="deskripsi_foto" placeholder="Deskripsi" rows="10"><?php echo ($data_foto['DeskripsiFoto'] ? $data_foto['DeskripsiFoto'] : '') ?></textarea>
+                                                    <textarea class="form-control" id="deskripsi_foto" type="text" name="deskripsi_foto" placeholder="Deskripsi" rows="10"><?php echo ($data_foto['deskripsi_foto'] ? $data_foto['deskripsi_foto'] : '') ?></textarea>
                                                 </div>
 
                                             <div class="d-flex justify-content-center">
